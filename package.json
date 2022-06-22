@@ -1,0 +1,31 @@
+{
+  "name": "keklabs-mongodb-ftdc",
+  "version": "0.9.0",
+  "description": "Tooling for processing of MongoDB FTDC diagnostic files.",
+  "main": "bin/main.js",
+  "bin": {
+    "ftdc2json": "./bin/main.js"
+  },
+  "scripts": {
+    "test": "testMain"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/keklabs/mongodb-ftdc.git"
+  },
+  "keywords": [
+    "mongodb",
+    "ftdc",
+    "diagnostic"
+  ],
+  "author": "keklabs",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/keklabs/mongodb-ftdc/issues"
+  },
+  "homepage": "https://github.com/keklabs/mongodb-ftdc#readme",
+  "dependencies": {
+    "bson": "^4.6.4",
+    "yargs": "^17.5.1"
+  }
+}
