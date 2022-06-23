@@ -18,16 +18,10 @@
 
  'use strict';
 
- var util = require('util');
- var Transform = require('stream').Transform;
- var assert = require('assert');
- 
- var BSON, bson = require('bson');
- if (process.browser) {
-   BSON = new bson();
- } else {
-   BSON = new bson.BSONPure.BSON();
- }
+ const util = require('util');
+ const Transform = require('stream').Transform;
+ const assert = require('assert');
+ const BSON = require('bson');
  
  /**
  * BSONStream
@@ -85,18 +79,17 @@
  
  // reset internal buffer
  BSONStream.prototype._reset = function _reset() {
-   if (this._debug) { console.log('_reset'); }
- 
+   if (this._debug) { console.log('_reset'); } 
    this._buffersTotalLength = 0;
    this._buffers = [];
-   this._buffer = new Buffer(0);
+   this._buffer = Buffer.from([]);
    this._remainingDocLen = null;
    this._doclen = null;
  };
  
  // read up to doclen bytes
  BSONStream.prototype._parseDocs = function _parseDocs(cb) {
-   if (this._debug) { console.log('_parseDocs'); }
+   if (this._debug) { console.log('_parseDocs: start'); }
  
  
    // first make sure the expected document length is known
@@ -105,6 +98,7 @@
  
      if (this._buffer.length < 4) {
        // wait for more chunks
+       if (this._debug) { console.log('_parseDocs: wait for more chunks'); }
        cb();
        return;
      }
@@ -112,7 +106,7 @@
      // bson spec defines signed int32
      var doclen = this._buffer.readInt32LE(0);
  
-     if (this._debug) { console.log('_parseDocs doc length', doclen); }
+     if (this._debug) { console.log('_parseDocs: doc length', doclen); }
  
  
      // should have at least have 5 bytes since the minimum document contains an int32 and a \x00 terminal
@@ -126,14 +120,12 @@
      if (doclen > this._maxDocLength) {
        // discard buffer
        this._reset();
-       cb(new Error('document exceeds configured maximum length'));
+       cb(new Error(`document exceeds configured maximum length ${this._maxDocLength}`));
        return;
      }
  
      this._remainingDocLen = doclen;
      this._doclen = doclen;
- 
- 
    }
  
    // since the expected document length is known, make sure the complete length is in the internal buffer

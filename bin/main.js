@@ -4,9 +4,8 @@
 
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
-const BSON = require('bson');
-const BSONStream = require('bson-stream');
-//const { EJSON, BSON } = require('bson');
+const BSONStream = require('./bson-stream');
+
 const fs = require('fs');
 const { Buffer } = require('buffer');
 const zlib = require('zlib');
@@ -44,10 +43,10 @@ inBsonStream.on('data', function (obj) {
   if (obj.type === 0) { //metadata
     console.log(JSON.stringify(obj, null, ' '));
   } else if (obj.type === 1) { //metrics
-    // console.log(obj.data);
+   //console.log(obj.data);
     let dataBase64 = Buffer.from(obj.data.buffer, 'base64');
     let bsonData = zlib.inflateSync(dataBase64.slice(4));  //slice(4) to avoid zlib header validy issue
-    // console.log(bsonData);
+     console.log(bsonData);
     const buffStream = Readable.from(bsonData);
     let bsonStream = buffStream.pipe(new BSONStream(bsonStreamOptions));
     bsonStream.on('error', errorHandler);
@@ -63,6 +62,7 @@ inBsonStream.on('data', function (obj) {
 
 function errorHandler(err) {
   console.log(`Unexpected error: \"${err.message}\"`);
+  console.error(`Unexpected error: \"${err.message}\"`);
   //process.exit(1);
 }
 
